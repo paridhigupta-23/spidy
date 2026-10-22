@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101b35">
+  <title>Spidey's Little World</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div><p class="eyebrow">A TINY WORLD MADE FOR YOU</p><h1>SPIDEY'S <span>LITTLE WORLD</span></h1></div>
+      </div>
+      <div class="top-stats">
+        <div class="coin-pill"><span class="coin">●</span><span id="coinCount">120</span> <small>WEB COINS</small></div>
+        <button id="resetBtn" class="icon-btn" title="Reset game" aria-label="Reset game">↻</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-panel">
+        <div class="scene-head">
+          <div><p class="eyebrow">YOUR FRIENDLY NEIGHBOURHOOD PET</p><h2 id="roomTitle">SPIDEY'S ROOM</h2></div>
+          <div class="status-chip"><span class="live-dot"></span> ONLINE IN YOUR WORLD</div>
+        </div>
+        <div class="room-scene" id="roomScene">
+          <div class="moon"></div><div class="city city-back"></div><div class="city city-front"></div>
+          <div class="window"><div class="window-cross"></div><div class="web-line web-one"></div><div class="web-line web-two"></div></div>
+          <div class="shelf"><span>✦</span><span>▣</span><span>✦</span></div>
+          <div class="poster">FRIENDLY<br><b>NEIGHBOURHOOD</b><br>SPIDER-MAN</div>
+          <div class="plant"><i></i><i></i><i></i><b></b></div>
+          <div class="rug"></div>
+          <div class="pet-wrap" id="petWrap" title="Tap Spider-Man to say hi!">
+            <div class="speech-bubble" id="speechBubble">Your friendly neighbourhood bestie.</div>
+            <div class="spidey" id="spidey" role="img" aria-label="Fit pixel-art Spider-Man">
+              <div class="spidey-web"></div>
+              <div class="head">
+                <div class="mask-web"></div><div class="eye eye-left"></div><div class="eye eye-right"></div>
+              </div>
+              <div class="neck"></div>
+              <div class="torso">
+                <div class="chest-web"></div><div class="spider-symbol">✣</div>
+                <div class="arm arm-left"></div><div class="arm arm-right"></div>
+              </div>
+              <div class="belt"></div>
+              <div class="leg leg-left"></div><div class="leg leg-right"></div>
+              <div class="boot boot-left"></div><div class="boot boot-right"></div>
+            </div>
+            <div class="pet-shadow"></div>
+          </div>
+          <div class="bed"><div class="pillow"></div><div class="blanket"></div><div class="bed-leg"></div></div>
+          <div class="floor-line"></div>
+          <div class="scene-spark spark-one">✦</div><div class="scene-spark spark-two">✧</div><div class="scene-spark spark-three">✦</div>
+        </div>
+        <div class="pet-caption">
+          <div><h3>SPIDER-MAN <span class="tiny-heart">♥</span></h3><p id="petLine">Fit, friendly, and definitely not skipping leg day.</p></div>
+          <button class="primary-btn" id="talkBtn">♡ Say hi</button>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel needs-panel">
+          <div class="panel-heading"><div><p class="eyebrow">KEEP YOUR HERO GOING</p><h2>SPIDEY'S VITALS</h2></div><span class="pixel-star">✦</span></div>
+          <div class="meter-row">
+            <div class="meter-icon food-icon">♥</div><div class="meter-content"><div class="meter-label"><span>SNACK LEVEL</span><b id="foodValue">78%</b></div><div class="meter-track"><div class="meter-fill food-fill" id="foodBar"></div></div></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-icon energy-icon">⚡</div><div class="meter-content"><div class="meter-label"><span>ENERGY</span><b id="energyValue">86%</b></div><div class="meter-track"><div class="meter-fill energy-fill" id="energyBar"></div></div></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-icon mood-icon">☻</div><div class="meter-content"><div class="meter-label"><span>MOOD</span><b id="moodValue">92%</b></div><div class="meter-track"><div class="meter-fill mood-fill" id="moodBar"></div></div></div>
+          </div>
+          <div class="action-grid">
+            <button class="action-btn" data-action="feed"><span class="action-emoji">🍕</span><span><b>Feed Spidey</b><small>Pizza snack · free</small></span><span class="action-arrow">↗</span></button>
+            <button class="action-btn" data-action="rest"><span class="action-emoji">🛏️</span><span><b>Let him rest</b><small>Restore energy</small></span><span class="action-arrow">↗</span></button>
+            <button class="action-btn" data-action="play"><span class="action-emoji">🕸️</span><span><b>Hang out</b><small>Boost his mood</small></span><span class="action-arrow">↗</span></button>
+            <button class="action-btn" data-action="compliment"><span class="action-emoji">💬</span><span><b>Give a compliment</b><small>He deserves it</small></span><span class="action-arrow">↗</span></button>
+          </div>
+        </article>
+
+        <article class="panel shop-panel">
+          <div class="panel-heading"><div><p class="eyebrow">MAKE IT HIS</p><h2>THE ROOM SHOP</h2></div><span class="shop-bag">▣</span></div>
+          <p class="panel-copy">Earn web coins by swinging through the city. Spend them on little upgrades for Spidey's space.</p>
+          <div class="shop-list" id="shopList"></div>
+          <div class="shop-footer"><span>Items you own stay yours.</span><span>✦ NO REFUNDS, WEB-HEAD</span></div>
+        </article>
+      </section>
+
+      <section class="game-panel panel">
+        <div class="mini-game-copy">
+          <p class="eyebrow">SIDE QUEST · NEW YORK CITY</p><h2>WEB-SLINGER<br><span>TRAINING RUN</span></h2>
+          <p>Tap or press SPACE to swing between rooftops, collect web coins and avoid the pigeons. A hero's work is never done.</p>
+          <div class="game-badges"><span>↑ SPACE / TAP</span><span>✦ COINS = REWARDS</span></div>
+          <button id="startGame" class="primary-btn">▶ Start a run</button>
+        </div>
+        <div class="game-frame">
+          <div class="game-hud"><span id="gameStatus">READY, WEB-HEAD?</span><span>COINS <b id="runCoins">0</b></span></div>
+          <canvas id="gameCanvas" width="640" height="300" aria-label="Web-slinging mini game"></canvas>
+          <div class="game-overlay" id="gameOverlay"><div class="overlay-icon">🕸️</div><b>YOUR CITY NEEDS YOU</b><span>Start a run to swing into action.</span></div>
+        </div>
+      </section>
+
+      <section class="message-panel panel">
+        <div class="message-art"><div class="pixel-envelope">✉</div><span class="floating-heart">♥</span><span class="floating-star">✦</span></div>
+        <div class="message-copy"><p class="eyebrow">CLASSIFIED · FOR SPIDEY'S EYES ONLY</p><h2>A MESSAGE FROM<br><span>YOUR FAVOURITE HUMAN</span></h2><p id="secretMessage">Psst... there are messages hidden around this little world. Keep checking in, superhero.</p><button id="unlockMessage" class="text-btn">Open a secret message <span>↗</span></button></div>
+        <div class="message-count"><b id="messageCount">01</b><span>SECRET<br>FOUND</span></div>
+      </section>
+      <footer><span>MADE WITH ♥, PIXELS & A LITTLE BIT OF WEB FLUID</span><span>SPIDEY'S LITTLE WORLD · EST. HIS 19TH YEAR</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
