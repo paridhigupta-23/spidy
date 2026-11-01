@@ -13,7 +13,7 @@ module.exports = function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed." });
   }
 
-  const { code, messageIndex } = req.body || {};
+  const { code } = req.body || {};
   if (!process.env.SECRET_CODE) {
     return res.status(500).json({ error: "Secret unlock is not configured yet." });
   }
@@ -22,10 +22,5 @@ module.exports = function handler(req, res) {
     return res.status(401).json({ error: "That code didn't work. Try again! ❤️" });
   }
 
-  const index = Number(messageIndex);
-  if (!Number.isInteger(index) || index < 0 || index >= secretMessages.length) {
-    return res.status(400).json({ error: "That message isn't available." });
-  }
-
-  return res.status(200).json({ message: secretMessages[index] });
+  return res.status(200).json({ messages: secretMessages });
 };
