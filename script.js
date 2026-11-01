@@ -16,15 +16,7 @@ const items = [
   {id:"plant", name:"Tiny Desk Plant", desc:"A little green sidekick.", icon:"🪴", cost:25, room:"plant"},
   {id:"headphones", name:"Hero Headphones", desc:"Soundtrack to saving NYC.", icon:"🎧", cost:50, room:"headphones"}
 ];
-const secretMessages = [
-  "Breaking news: local superhero is ridiculously cool. Sources say his favourite human is also pretty amazing. ❤️",
-  "Reminder from your personal support human: drink water, eat something, and stop pretending you don't need rest.",
-  "Your reward for being a certified cutie: one (1) virtual hug. Redeemable whenever you want. 🫂",
-  "Spider-Man saves New York. You make my days better. Seems like we're both doing important work.",
-  "P.S. You're allowed to have bad days. Even superheroes need someone in their corner. I'm cheering for you, always.",
-  "Official Spidey report: 10/10 hero, 11/10 face, questionable levels of stubbornness. Case closed. 😭",
-  "Your next mission: keep being you. No upgrades required. (Okay, maybe remember to reply to messages.)"
-];
+
 const helloLines = [
   "Your friendly neighbourhood bestie.",
   "Fit, friendly, and definitely not skipping leg day.",
@@ -58,7 +50,7 @@ function renderStats(){
     $(k+"Value").textContent = state[k]+"%";
     $(k+"Bar").style.width = state[k]+"%";
   });
-  $("messageCount").textContent = String(Math.min(state.secrets.length, secretMessages.length)).padStart(2,"0");
+  $("messageCount").textContent = String(Math.min(state.secrets.length, 7)).padStart(2,"0");
 }
 function renderShop(){
   $("shopList").innerHTML = items.map(item=>{
@@ -106,11 +98,20 @@ function renderAll(){renderStats();renderShop();applyRoom();}
 document.querySelectorAll("[data-action]").forEach(btn=>btn.addEventListener("click",()=>action(btn.dataset.action)));
 $("talkBtn").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
 $("petWrap").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
-$("unlockMessage").addEventListener("click",()=>{
-  let next = secretMessages.findIndex((_,i)=>!state.secrets.includes(i));
-  if(next<0){say("You've found all my secrets! But you can reread them any time.");$("secretMessage").textContent=secretMessages[state.secrets[state.secrets.length-1] ?? 0];toast("All secret messages found, legend!");return;}
-  state.secrets.push(next);$("secretMessage").textContent=secretMessages[next];
-  saveState();renderStats();say("Psst... a secret message just for you.");toast("Secret message unlocked! ✉");
+$("unlockMessage").addEventListener("click",async()=>{
+  const next = Array.from({length:7},(_,i)=>i).find(i=>!state.secrets.includes(i));
+  const messageIndex = next ?? state.secrets[state.secrets.length-1] ?? 0;
+  const code = prompt("Enter the secret code to unlock Spidey's message:");
+  if(code===null)return;
+  try{
+    const response=await fetch("/api/unlock-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,messageIndex})});
+    const data=await response.json();
+    if(!response.ok){toast(data.error||"That code didn't work. Try again!");return;}
+    $("secretMessage").textContent=data.message;
+    if(next!==undefined)state.secrets.push(next);
+    saveState();renderStats();say("Psst... a secret message just for you.");
+    toast(next===undefined?"All secret messages found, legend!":"Secret message unlocked! ✉");
+  }catch(error){toast("Couldn't reach the secret-message service. Try again in a moment.");}
 });
 $("resetBtn").addEventListener("click",()=>{
   if(confirm("Reset Spidey's world? Your coins, items and progress will be cleared on this device.")){
@@ -168,7 +169,7 @@ function drawGame(){
 }
 function startRun(){
   if(game.running)return;
-  game={running:true,frame:0,y:170,vy:0,x:90,obstacles:[],coins:[],score:0,world:0,lastSpawn:0};
+  game={running:true,frame:0,y:145,vy:-2.2,x:90,obstacles:[],coins:[],score:0,world:0,lastSpawn:0};
   $("gameOverlay").classList.add("hidden");$("gameStatus").textContent="SWINGING THROUGH NYC";$("runCoins").textContent="0";
   requestAnimationFrame(loopGame);
 }
@@ -176,8 +177,8 @@ function swing(){if(game.running)game.vy=-4.5;}
 function loopGame(){
   if(!game.running)return;
   game.frame++;game.world+=3.1;
-  game.vy+=.22;game.y+=game.vy;
-  if(game.y<45){game.y=45;game.vy=.6;}if(game.y>210){endRun("You clipped a rooftop!");return;}
+  game.vy+=.14;game.y+=game.vy;
+  if(game.y<45){game.y=45;game.vy=.6;}if(game.y>220){endRun("You clipped a rooftop!");return;}
   if(game.frame-game.lastSpawn>68){
     game.lastSpawn=game.frame;
     if(Math.random()>.25)game.coins.push({x:660,y:70+Math.random()*115});
