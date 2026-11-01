@@ -98,23 +98,46 @@ function renderAll(){renderStats();renderShop();applyRoom();}
 document.querySelectorAll("[data-action]").forEach(btn=>btn.addEventListener("click",()=>action(btn.dataset.action)));
 $("talkBtn").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
 $("petWrap").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
+let secretMessages = [];
+let secretMessageIndex = 0;
+
+function showSecretMessage(){
+  const messageBox=$("secretMessage");
+  messageBox.replaceChildren();
+  if(secretMessageIndex >= secretMessages.length){
+    messageBox.textContent="That's all 25 little reminders for you. Keep being your wonderful self, Spidey. ❤️";
+    $("messageCount").textContent=String(secretMessages.length).padStart(2,"0");
+    const restart=document.createElement("button");
+    restart.className="text-btn";
+    restart.textContent="Read them again ↻";
+    restart.addEventListener("click",()=>{secretMessageIndex=0;showSecretMessage();});
+    messageBox.appendChild(restart);
+    return;
+  }
+  const line=document.createElement("span");
+  line.className="secret-line";
+  line.textContent=secretMessages[secretMessageIndex];
+  messageBox.appendChild(line);
+  $("messageCount").textContent=String(secretMessageIndex+1).padStart(2,"0");
+  const next=document.createElement("button");
+  next.className="text-btn";
+  next.textContent=secretMessageIndex===secretMessages.length-1 ? "Finish reading →" : "Next message →";
+  next.addEventListener("click",()=>{secretMessageIndex++;showSecretMessage();});
+  messageBox.appendChild(next);
+}
+
 $("unlockMessage").addEventListener("click",async()=>{
-  const code = prompt("Enter the secret code to unlock all of Spidey's messages:");
+  const code = prompt("Enter the secret code to unlock Spidey's messages:");
   if(code===null)return;
   try{
     const response=await fetch("/api/unlock-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code})});
     const data=await response.json();
     if(!response.ok){toast(data.error||"That code didn't work. Try again!");return;}
-    const messageBox=$("secretMessage");
-    messageBox.replaceChildren();
-    data.messages.forEach((message,index)=>{
-      const line=document.createElement("p");
-      line.className="secret-line";
-      line.textContent=(index+1)+". "+message;
-      messageBox.appendChild(line);
-    });
-    say("Psst... all the secret messages are yours.");
-    toast("All secret messages unlocked! ❤️");
+    secretMessages=data.messages;
+    secretMessageIndex=0;
+    showSecretMessage();
+    say("One little message at a time, just for you.");
+    toast("Secret messages unlocked! ❤️");
   }catch(error){toast("Couldn't reach the secret-message service. Try again in a moment.");}
 });
 $("resetBtn").addEventListener("click",()=>{
