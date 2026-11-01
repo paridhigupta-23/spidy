@@ -99,18 +99,22 @@ document.querySelectorAll("[data-action]").forEach(btn=>btn.addEventListener("cl
 $("talkBtn").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
 $("petWrap").addEventListener("click",()=>say(helloLines[Math.floor(Math.random()*helloLines.length)]));
 $("unlockMessage").addEventListener("click",async()=>{
-  const next = Array.from({length:7},(_,i)=>i).find(i=>!state.secrets.includes(i));
-  const messageIndex = next ?? state.secrets[state.secrets.length-1] ?? 0;
-  const code = prompt("Enter the secret code to unlock Spidey's message:");
+  const code = prompt("Enter the secret code to unlock all of Spidey's messages:");
   if(code===null)return;
   try{
-    const response=await fetch("/api/unlock-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,messageIndex})});
+    const response=await fetch("/api/unlock-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code})});
     const data=await response.json();
     if(!response.ok){toast(data.error||"That code didn't work. Try again!");return;}
-    $("secretMessage").textContent=data.message;
-    if(next!==undefined)state.secrets.push(next);
-    saveState();renderStats();say("Psst... a secret message just for you.");
-    toast(next===undefined?"All secret messages found, legend!":"Secret message unlocked! ✉");
+    const messageBox=$("secretMessage");
+    messageBox.replaceChildren();
+    data.messages.forEach((message,index)=>{
+      const line=document.createElement("p");
+      line.className="secret-line";
+      line.textContent=(index+1)+". "+message;
+      messageBox.appendChild(line);
+    });
+    say("Psst... all the secret messages are yours.");
+    toast("All secret messages unlocked! ❤️");
   }catch(error){toast("Couldn't reach the secret-message service. Try again in a moment.");}
 });
 $("resetBtn").addEventListener("click",()=>{
